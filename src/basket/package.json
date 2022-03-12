@@ -1,0 +1,10 @@
+{
+    "name": "@src/basket",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.51.0",
+        "@aws-sdk/client-eventbridge": "^3.51.0",
+        "@aws-sdk/util-dynamodb": "^3.51.0"
+    }
+}
