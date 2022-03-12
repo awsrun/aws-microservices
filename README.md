@@ -1,7 +1,8 @@
 # Serverless Event-driven E-commerce Microservices Architecture
 
-This is a blank project for TypeScript development with CDK.
+![course2](https://user-images.githubusercontent.com/1147445/158019166-96732203-6642-4242-b1d9-d53ece2e1ed3.png)
 
+This is a Serverless Event-driven E-commerce project for TypeScript development with CDK.
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Useful commands
