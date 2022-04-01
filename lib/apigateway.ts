@@ -8,59 +8,55 @@ interface SwnApiGatewayProps {
     orderingMicroservices: IFunction
 }
 
-export class SwnApiGateway extends Construct {
+export class SwnApiGateway extends Construct {    
 
-    constructor(scope: Construct, id: string, props: SwnApiGatewayProps){
+    constructor(scope: Construct, id: string, props: SwnApiGatewayProps) {
         super(scope, id);
 
         // Product api gateway
         this.createProductApi(props.productMicroservice);
         // Basket api gateway
-        this.createBasketApi(props.basketMicroservice);    
+        this.createBasketApi(props.basketMicroservice);
         // Ordering api gateway
         this.createOrderApi(props.orderingMicroservices);
     }
 
     private createProductApi(productMicroservice: IFunction) {
-        
-        // Product microservices api gateway
-        // root name = product
-        
-        // GET /product
-        // POST /product
+      // Product microservices api gateway
+      // root name = product
 
-        // Single product with id parameter
-        // GET /product/{id}
-        // PUT /product/{id}
-        // DELETE /product/{id}
+      // GET /product
+      // POST /product
 
-        const apigw = new LambdaRestApi(this, 'productApi', {
-            restApiName: 'Product Service',
-            handler: productMicroservice,
-            proxy: false
-        });
-    
-        const product = apigw.root.addResource('product');
-        product.addMethod('GET');  // GET /product
-        product.addMethod('POST');  // POST /product
-    
-        const singleProduct = product.addResource('{id}');
-        singleProduct.addMethod('GET');  // GET /product/{id}
-        singleProduct.addMethod('PUT'); // PUT /product/{id}
-        singleProduct.addMethod('DELETE'); // DELETE /product/{id}
+      // Single product with id parameter
+      // GET /product/{id}
+      // PUT /product/{id}
+      // DELETE /product/{id}
 
-        return singleProduct;
+      const apigw = new LambdaRestApi(this, 'productApi', {
+        restApiName: 'Product Service',
+        handler: productMicroservice,
+        proxy: false
+      });
+  
+      const product = apigw.root.addResource('product');
+      product.addMethod('GET'); // GET /product
+      product.addMethod('POST');  // POST /product
+      
+      const singleProduct = product.addResource('{id}'); // product/{id}
+      singleProduct.addMethod('GET'); // GET /product/{id}
+      singleProduct.addMethod('PUT'); // PUT /product/{id}
+      singleProduct.addMethod('DELETE'); // DELETE /product/{id}
     }
 
     private createBasketApi(basketMicroservice: IFunction) {
-        
         // Basket microservices api gateway
         // root name = basket
 
         // GET /basket
         // POST /basket
 
-        // Single basket with userName parameter
+        // // Single basket with userName parameter - resource name = basket/{userName}
         // GET /basket/{userName}
         // DELETE /basket/{userName}
 
@@ -87,10 +83,14 @@ export class SwnApiGateway extends Construct {
     }
 
     private createOrderApi(orderingMicroservices: IFunction) {
-    
-        // GET /order 
-        // GET /order/{userName}
-    
+        // Ordering microservices api gateway
+        // root name = order
+
+        // GET /order
+	    // GET /order/{userName}
+        // expected request : xxx/order/swn?orderDate=timestamp
+        // ordering ms grap input and query parameters and filter to dynamo db
+
         const apigw = new LambdaRestApi(this, 'orderApi', {
             restApiName: 'Order Service',
             handler: orderingMicroservices,
@@ -107,5 +107,4 @@ export class SwnApiGateway extends Construct {
     
         return singleOrder;
     }
-
 }

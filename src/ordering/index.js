@@ -3,19 +3,19 @@ import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { ddbClient } from "./ddbClient";
 
 exports.handler = async function(event) {
-  console.log("request:", JSON.stringify(event, undefined, 2));
+    console.log("request:", JSON.stringify(event, undefined, 2));
 
-  if(event.Records != null) {
-    // SQS Invocation
-    await sqsInvocation(event);
-  }
-  else if (event['detail-type'] !== undefined) {
-    // EventBridge Invocation
-    await eventBridgeInvocation(event);
-  } else {
-    // API Gateway Invocation -- return sync response
-    return await apiGatewayInvocation(event);
-  }
+    if(event.Records != null) {
+      // SQS Invocation
+      await sqsInvocation(event);
+    }
+    else if (event['detail-type'] !== undefined) {
+      // EventBridge Invocation
+      await eventBridgeInvocation(event);
+    } else {
+      // API Gateway Invocation -- return sync response
+      return await apiGatewayInvocation(event);
+    }
 };
 
 const sqsInvocation = async (event) => {
@@ -24,15 +24,18 @@ const sqsInvocation = async (event) => {
   event.Records.forEach(async (record) => {
     console.log('Record: %j', record);
     
-    const checkoutEventRequest = JSON.parse(record.body); // expected request : { "detail-type\":\"CheckoutBasket\",\"source\":\"com.swn.basket.checkoutbasket\", "detail\":{\"userName\":\"swn\",\"totalPrice\":1820, .. }    
+    // expected request : { "detail-type\":\"CheckoutBasket\",\"source\":\"com.swn.basket.checkoutbasket\", "detail\":{\"userName\":\"swn\",\"totalPrice\":1820, .. }
+    const checkoutEventRequest = JSON.parse(record.body); 
+    
     // create order item into db
-    await createOrder(checkoutEventRequest.detail); // detail object should be checkoutbasket json object
+    await createOrder(checkoutEventRequest.detail); 
+    // detail object should be checkoutbasket json object
   });
 }
 
 const eventBridgeInvocation = async (event) => {
   console.log(`eventBridgeInvocation function. event : "${event}"`);
-  
+
   // create order item into db
   await createOrder(event.detail);
 }
@@ -66,27 +69,27 @@ const apiGatewayInvocation = async (event) => {
 	// GET /order/{userName}
   let body;
 
-  try{
-      switch (event.httpMethod) {
-          case "GET":
-              if (event.pathParameters != null) {
-              body = await getOrder(event);
-              } else {
-              body = await getAllOrders();
-              }
-              break;
-          default:
-              throw new Error(`Unsupported route: "${event.httpMethod}"`);
-      }
+  try {
+    switch (event.httpMethod) {
+        case "GET":
+            if (event.pathParameters != null) {
+            body = await getOrder(event);
+            } else {
+            body = await getAllOrders();
+            }
+            break;
+        default:
+            throw new Error(`Unsupported route: "${event.httpMethod}"`);
+    }
 
-      console.log(body);
-      return {
-          statusCode: 200,
-          body: JSON.stringify({
-              message: `Successfully finished operation: "${event.httpMethod}"`,
-              body: body
-          })
-      };
+    console.log(body);
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            message: `Successfully finished operation: "${event.httpMethod}"`,
+            body: body
+        })
+    };
   }
   catch(e) {
       console.error(e);
@@ -98,9 +101,8 @@ const apiGatewayInvocation = async (event) => {
           errorStack: e.stack,
         })
       };
-  }  
+  }
 }
-
 
 const getOrder = async (event) => {
   console.log("getOrder");

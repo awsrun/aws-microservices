@@ -10,8 +10,8 @@ export class AwsMicroservicesStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const database = new SwnDatabase(this, 'Database');
-    
+    const database = new SwnDatabase(this, 'Database');    
+
     const microservices = new SwnMicroservices(this, 'Microservices', {
       productTable: database.productTable,
       basketTable: database.basketTable,
@@ -23,15 +23,15 @@ export class AwsMicroservicesStack extends Stack {
       basketMicroservice: microservices.basketMicroservice,
       orderingMicroservices: microservices.orderingMicroservice
     });
-
+    
     const queue = new SwnQueue(this, 'Queue', {
       consumer: microservices.orderingMicroservice
     });
 
     const eventbus = new SwnEventBus(this, 'EventBus', {
       publisherFuntion: microservices.basketMicroservice,
-      targetQueue: queue.orderQueue
-    });
+      targetQueue: queue.orderQueue   
+    });   
 
   }
 }

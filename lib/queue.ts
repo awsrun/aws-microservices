@@ -1,8 +1,8 @@
-import { Construct } from "constructs";
-import { IFunction } from "aws-cdk-lib/aws-lambda";
-import { IQueue, Queue } from "aws-cdk-lib/aws-sqs";
-import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { Duration } from "aws-cdk-lib";
+import { IFunction } from "aws-cdk-lib/aws-lambda";
+import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
+import { IQueue, Queue } from "aws-cdk-lib/aws-sqs";
+import { Construct } from "constructs";
 
 interface SwnQueueProps {
     consumer: IFunction;
